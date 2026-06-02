@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flipkart Clone</title>
+    <!-- Using Google Fonts for that standard e-commerce look -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --primary-blue: #2874f0;
+            --accent-yellow: #ffe500;
+            --bg-gray: #f1f3f6;
+            --text-dark: #212121;
+            --text-gray: #878787;
+            --border-color: #f0f0f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-gray);
+            height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- UTILITY CLASSES --- */
+        .hidden { display: none !important; }
+        .btn {
+            cursor: pointer;
+            border: none;
+            outline: none;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+
+        /* --- LOGIN PAGE STYLES --- */
+        #login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: var(--primary-blue);
+        }
+
+        .login-container {
+            background: white;
+            display: flex;
+            width: 850px;
+            height: 500px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .login-banner {
+            background-color: #2874f0;
+            color: white;
+            width: 40%;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .login-banner h2 { font-size: 28px; margin-bottom: 15px; }
+        .login-banner p { color: #dbdbdb; font-size: 16px; line-height: 1.5; }
+        
+        .login-form-section {
+            width: 60%;
+            padding: 50px 35px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .input-group { position: relative; margin-bottom: 25px; }
+        
+        .input-group input {
+            width: 100%;
+            padding: 10px 0;
+            border: none;
+            border-bottom: 1px solid #e0e0e0;
+            outline: none;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .input-group input:focus { border-bottom: 2px solid var(--primary-blue); }
+        .input-group label {
+            position: absolute;
+            left: 0;
+            top: 10px;
+            color: var(--text-gray);
+            pointer-events: none;
+            transition: 0.2s;
+            font-size: 16px;
+        }
+
+        .input-group input:focus ~ label,
+        .input-group input:valid ~ label {
+            top: -15px;
+            font-size: 12px;
+            color: var(--primary-blue);
+        }
+
+        .login-btn {
+            background: #fb641b;
+            color: white;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 2px;
+            margin-top: 10px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* --- MAIN STORE STYLES --- */
+        header {
+            background-color: var(--primary-blue);
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            padding: 0 20px;
+        }
+
+        .logo {
+            color: white;
+            font-style: italic;
+            font-weight: 800;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+        .logo span { font-size: 11px; font-weight: 500; color: #f0f0f0; font-style: normal;}
+        .logo span b { color: var(--accent-yellow); }
+
+        .search-bar {
+            flex-grow: 1;
+            background: white;
+            display: flex;
+            align-items: center;
+            border-radius: 2px;
+            padding: 0 10px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .cart-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: 10px auto;
+            padding: 10px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 10px;
+        }
+
+        .product-card {
+            background: white;
+            padding: 15px;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 3px 16px rgba(0,0,0,0.1);
+        }
+
+        .img-container {
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .img-container img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .p-title { font-size: 14px; font-weight: 500; color: var(--text-dark); }
+        .p-desc { font-size: 12px; color: var(--text-gray); margin-top: 4px; }
+        
+        .price-row {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .p-price { font-size: 18px; font-weight: 600; color: var(--text-dark); }
+        .p-offer { font-size: 13px; color: #388e3c; font-weight: 600; }
+
+        .add-cart-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #ff9f00;
+            color: white;
+            font-weight: 600;
+            border-radius: 2px;
+            margin-top: 10px;
+        }
+
+        /* --- MODAL / POPUP STYLES --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .checkout-modal {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            display: flex;
+            border-radius: 4px;
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .checkout-left {
+            flex: 1.5;
+            padding: 20px;
+            border-right: 1px solid #f0f0f0;
+        }
+
+        .checkout-right {
+            flex: 1;
+            padding: 20px;
+            background: #fff;
+        }
+
+        .modal-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+            text-transform: uppercase;
+        }
+
+        .checkout-item {
+            display: flex;
+            gap: 15px;
+            border: 1px solid #f0f0f0;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .checkout-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+
+        .address-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 2px;
+        }
+
+        .price-details {
+            border-bottom: 1px dashed #e0e0e0;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 18px;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 15px;
+        }
+
+        .pay-btn {
+            background: #fb641b;
+            color: white;
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .close-btn {
+            background: transparent;
+            color: var(--text-gray);
+            font-size: 14px;
+            margin-top: 10px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* --- NOTIFICATION --- */
+        #notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            z-index: 2000;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- === VIEW 1: LOGIN PAGE === -->
+    <div id="login-page">
+        <div class="login-container">
+            <div class="login-banner">
+                <div>
+                    <h2>Login</h2>
+                    <p>Get access to your Orders, Wishlist and Recommendations</p>
+                </div>
+                <div style="opacity: 0.8; font-size: 80px; text-align: center;">🛍️</div>
+            </div>
+            <div class="login-form-section">
+                <form onsubmit="handleLogin(event)">
+                    <div class="input-group">
+                        <input type="text" id="email" required>
+                        <label>Enter Email/Mobile number</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="password" required>
+                        <label>Enter Password</label>
+                    </div>
+                    <p style="font-size: 12px; color: #878787; margin-bottom: 20px;">
+                        By continuing, you agree to Flipkart's Terms of Use and Privacy Policy.
+                    </p>
+                    <button type="submit" class="btn login-btn">Login</button>
+                    <p style="margin-top: 20px; text-align: center; color: #2874f0; font-weight: 500; cursor: pointer;">
+                        New to Flipkart? Create an account
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- === VIEW 2: MAIN STORE === -->
+    <div id="store-page" class="hidden">
+        <header>
+            <div class="header-content">
+                <div class="logo" onclick="alert('Reloading Home...')">
+                    Flipkart
+                    <span>Explore <b>Plus</b></span>
+                </div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search for products, brands and more">
+                    <span style="color: #2874f0;">🔍</span>
+                </div>
+                <div class="nav-link" id="user-name-display">My Account</div>
+                <div class="nav-link">More</div>
+                <div class="nav-link cart-btn">
+                    🛒 Cart <span id="cart-count">(0)</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- Product Grid -->
+            <div class="products-grid" id="products-grid">
+                <!-- Products injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- === VIEW 3: CHECKOUT MODAL (Pop-up) === -->
+    <div id="checkout-modal" class="modal-overlay hidden">
+        <div class="checkout-modal">
+            <!-- Left Side: Order Summary & Address -->
+            <div class="checkout-left">
+                <div class="modal-header">1. Order Summary</div>
+                <div id="checkout-product-details">
+                    <!-- Dynamic Product Info -->
+                </div>
+
+                <div class="modal-header" style="margin-top: 30px;">2. Delivery Address</div>
+                <form class="address-form" id="checkout-form" onsubmit="handlePlaceOrder(event)">
+                    <input type="text" placeholder="Name" required>
+                    <input type="text" placeholder="Address Line 1" required>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" placeholder="City" required>
+                        <input type="text" placeholder="Pincode" required>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Right Side: Price Details -->
+            <div class="checkout-right">
+                <div class="modal-header" style="color: #878787;">Price Details</div>
+                <div class="price-details">
+                    <div class="detail-row">
+                        <span>Price (1 item)</span>
+                        <span id="price-amt">₹0</span>
+                    </div>
+                    <div class="detail-row">
+                        <span>Delivery Charges</span>
+                        <span style="color: #388e3c;">FREE</span>
+                    </div>
+                </div>
+                <div class="total-row">
+                    <span>Total Amount</span>
+                    <span id="total-amt">₹0</span>
+                </div>
+
+                <button class="btn pay-btn" onclick="document.getElementById('checkout-form').requestSubmit()">PLACE ORDER</button>
+                <button class="btn close-btn" onclick="closeCheckout()">Continue Shopping</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="notification">Order Placed Successfully!</div>
+
+    <script>
+        // --- DATA ---
+        const products = [
+            { id: 1, name: "Apple iPhone 15 (Black, 128 GB)", price: 65999, original: 79900, offer: "17% off", img: "https://images.unsplash.com/photo-1592750475338-74b7b21918a4?auto=format&fit=crop&q=80&w=600" },
+            { id: 2, name: "Nike Revolution 6 Running Shoes", price: 2499, original: 3695, offer: "32% off", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=600" },
+            { id: 3, name: "Sony WH-CH520 Headphones", price: 4490, original: 5990, offer: "25% off", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=600" },
+            { id: 4, name: "Canon EOS 3000D DSLR Camera", price: 33999, original: 35999, offer: "5% off", img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=600" },
+            { id: 5, name: "Puma Men's T-Shirt", price: 599, original: 1299, offer: "53% off", img: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&q=80&w=600" },
+            { id: 6, name: "Fastrack Smart Watch", price: 1999, original: 3999, offer: "50% off", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=600" },
+            { id: 7, name: "Wildcraft 44L Laptop Bag", price: 1299, original: 2499, offer: "48% off", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=600" },
+            { id: 8, name: "Ray-Ban Aviator Sunglasses", price: 6590, original: 8990, offer: "26% off", img: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=600" }
+        ];
+
+        let cartCount = 0;
+        let selectedProduct = null;
+
+        // --- FUNCTIONS ---
+
+        // 1. Handle Login
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            
+            if(email) {
+                // Switch Views
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('store-page').classList.remove('hidden');
+                
+                // Set username in header
+                const username = email.split('@')[0];
+                document.getElementById('user-name-display').textContent = username;
+                
+                // Initialize Store
+                renderProducts();
+            }
+        }
+
+        // 2. Render Products
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = products.map(product => `
+                <div class="product-card">
+                    <div class="img-container">
+                        <img src="${product.img}" alt="${product.name}">
+                    </div>
+                    <div>
+                        <div class="p-title">${product.name}</div>
+                        <div class="p-desc">Black, Standard</div>
+                        <div class="price-row">
+                            <div class="p-price">₹${product.price.toLocaleString()}</div>
+                            <div class="p-desc" style="text-decoration: line-through;">₹${product.original.toLocaleString()}</div>
+                            <div class="p-offer">${product.offer}</div>
+                        </div>
+                    </div>
+                    <button class="btn add-cart-btn" onclick="addToCart(${product.id})">ADD TO CART</button>
+                </div>
+            `).join('');
+        }
+
+        // 3. Add to Cart & Open Checkout Popup
+        function addToCart(id) {
+            // Update Cart UI
+            cartCount++;
+            document.getElementById('cart-count').innerText = `(${cartCount})`;
+
+            // Find Product Data
+            selectedProduct = products.find(p => p.id === id);
+
+            // Populate Checkout Modal
+            const checkoutContainer = document.getElementById('checkout-product-details');
+            checkoutContainer.innerHTML = `
+                <div class="checkout-item">
+                    <img src="${selectedProduct.img}" alt="">
+                    <div>
+                        <div style="font-size: 14px; margin-bottom: 5px;">${selectedProduct.name}</div>
+                        <div style="font-size: 12px; color: #878787;">Seller: SuperComNet</div>
+                        <div style="font-size: 18px; font-weight: 600; margin-top: 10px;">₹${selectedProduct.price.toLocaleString()}</div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('price-amt').innerText = `₹${selectedProduct.price.toLocaleString()}`;
+            document.getElementById('total-amt').innerText = `₹${selectedProduct.price.toLocaleString()}`;
+
+            // Show Modal
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        // 4. Close Checkout
+        function closeCheckout() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        // 5. Place Order
+        function handlePlaceOrder(e) {
+            e.preventDefault();
+            
+            // Close modal
+            closeCheckout();
+            
+            // Reset form
+            document.getElementById('checkout-form').reset();
+            
+            // Show Notification
+            const notif = document.getElementById('notification');
+            notif.style.display = 'block';
+            notif.style.background = '#388e3c'; // Green
+            notif.innerText = `Order placed for ${selectedProduct.name.substring(0, 20)}...`;
+            
+            setTimeout(() => {
+                notif.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
